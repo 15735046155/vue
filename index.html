@@ -3,7 +3,7 @@
  * @Author: 黄佳佳
  * @Date: 2021-01-16 10:52:35
  * @LastEditors: 黄佳佳
- * @LastEditTime: 2021-01-16 15:33:17
+ * @LastEditTime: 2021-01-16 18:03:01
 -->
 <!DOCTYPE html>
 <html lang="en">
@@ -20,12 +20,12 @@
             el:"#app",
             data(){
                 return {
-                    a:1
+                    a:[1,2]
                 }
             }
         })
-        vm._data.a = {a:1}
-        console.log(vm._data.a)
+        vm.a = 2
+        console.log(vm.a)
     </script>
 </body>
 </html>

@@ -51,29 +51,61 @@
     });
 
     /*
+     * @Descripttion: 
+     * @Author: 黄佳佳
+     * @Date: 2021-01-16 17:45:35
+     * @LastEditors: 黄佳佳
+     * @LastEditTime: 2021-01-16 18:04:15
+     */
+    // 自己定义的代理数据方法
+    function proxy(vm, data, key) {
+        console.log(vm[data][key]);
+        Object.defineProperty(vm, key,{
+            get() {
+                return vm[data][key]; // vm._data.a --> vm.a
+            },
+            set(newValue) {
+                vm[data][key] = newValue; // vm._data.a = 1  --> vm.a = 1
+            }
+        });
+    }
+    function defineProperty(target, key, value) {
+        // Object.defineProperty(value,'__ob__',{
+        Object.defineProperty(target,key,{
+            enumerable: false, // 不能被枚举，不能被循环出来
+            configurable: false,
+            // value: this // 把当前的实例定义在value上，方便在数组劫持的js中使用写在对象观测js中的observerArray方法
+            value
+        });
+    }
+    // 是否是对象 true：对象  false: 不是对象
+    function isObject(data) {
+        return typeof data == "object" && data != null
+    }
+    // 是否是数组 true：数组  false: 不是数组
+    function isArray(data) {
+        return Array.isArray(data)
+    }
+
+    /*
      * @Descripttion: 数据劫持，把数据变成响应式的数据
      * @Author: 黄佳佳
      * @Date: 2021-01-16 15:02:01
      * @LastEditors: 黄佳佳
-     * @LastEditTime: 2021-01-16 17:23:07
+     * @LastEditTime: 2021-01-16 18:04:29
      */
-
     // 检测数据的类
     class Observer {
         constructor(value){
             //判断一个对象是否被观测过，看是都有__ob__这个属性
-            Object.defineProperty(value,'__ob__',{
-                enumerable: false, // 不能被枚举，不能被循环出来
-                configurable: false,
-                value: this // 把当前的实例定义在value上，方便在数组劫持的js中使用写在对象观测js中的observerArray方法
-            });
+            defineProperty(value,'__ob__',this);
 
-            if(Array.isArray(value)){
+            if(isArray(value)){
                 // push shift  unshifyt  splice sort reserve pop这些方法会改变数组、函数劫持
                 // 当值为数组的时候，劫持
                 value.__proto__ = arrayMethods;
                 // 观测数组中的对象类型，当数组的值为对象的时候 [{a:1}],更改arr[0].a = 100的时候
-                observerArray(value);
+                this.observerArray(value);
             } else {
                 // 使用defineProperty  重新定义属性
                 this.walk(value);
@@ -112,7 +144,8 @@
     // 检测的data 必须是object  但是不能是null
     function observer(data) {
         // 检测的data不是对象，直接返回,typeof null == "object"
-        if(typeof data !== "object" || data == null) {
+        if(!isObject()) {
+            console.log("bubuu");
             return data
         }
         // 如果被检测过就不用再检测了
@@ -128,7 +161,7 @@
      * @Author: 黄佳佳
      * @Date: 2021-01-16 14:25:15
      * @LastEditors: 黄佳佳
-     * @LastEditTime: 2021-01-16 15:31:08
+     * @LastEditTime: 2021-01-16 17:56:32
      */
     function initState(vm){
         const opts = vm.$options;
@@ -140,6 +173,7 @@
         if(opts.computed);
         if(opts.watch);
     }
+
     function initData(vm) {
         let data = vm.$options.data;
         // 判断data是否是对象，data.call是因为如果是个函数执行的话
@@ -147,6 +181,13 @@
         vm._data = data = typeof data == "function" ? data.call(vm) : data;
         // console.log(data) // {a:1}
         // 数据的劫持方案，对象object.definproperty,数组 单独处理
+
+        // 代理数据 vm._data.a  -->  vm.a
+        for (let key in data) {
+            // 自己写的代理方法
+            proxy(vm, '_data', key);
+        }
+
         observer(data);
     }
 

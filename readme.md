@@ -3,7 +3,7 @@
  * @Author: 黄佳佳
  * @Date: 2021-01-16 10:44:57
  * @LastEditors: 黄佳佳
- * @LastEditTime: 2021-01-16 10:59:33
+ * @LastEditTime: 2021-01-16 17:44:49
 -->
 # 安装一些包
  npm install rollup rollup-plugin-babel @babel/core @babel/preset-env rollup-plugin-serve
@@ -11,3 +11,5 @@
  rollup-plugin-serve启动服务的
 
  rollup -c -w 打包使用配置文件并且监听
+
+ 数组改索引是可以被检测到的

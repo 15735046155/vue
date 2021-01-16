@@ -3,27 +3,23 @@
  * @Author: 黄佳佳
  * @Date: 2021-01-16 15:02:01
  * @LastEditors: 黄佳佳
- * @LastEditTime: 2021-01-16 17:23:07
+ * @LastEditTime: 2021-01-16 18:04:29
  */
 
 import { arrayMethods } from "./array";
-
+import { defineProperty, isObject, isArray } from "../util"
 // 检测数据的类
 class Observer {
     constructor(value){
         //判断一个对象是否被观测过，看是都有__ob__这个属性
-        Object.defineProperty(value,'__ob__',{
-            enumerable: false, // 不能被枚举，不能被循环出来
-            configurable: false,
-            value: this // 把当前的实例定义在value上，方便在数组劫持的js中使用写在对象观测js中的observerArray方法
-        })
+        defineProperty(value,'__ob__',this)
 
-        if(Array.isArray(value)){
+        if(isArray(value)){
             // push shift  unshifyt  splice sort reserve pop这些方法会改变数组、函数劫持
             // 当值为数组的时候，劫持
             value.__proto__ = arrayMethods;
             // 观测数组中的对象类型，当数组的值为对象的时候 [{a:1}],更改arr[0].a = 100的时候
-            observerArray(value)
+            this.observerArray(value)
         } else {
             // 使用defineProperty  重新定义属性
             this.walk(value)
@@ -62,7 +58,8 @@ function defineReactive(data, key, value) {
 // 检测的data 必须是object  但是不能是null
 export function observer(data) {
     // 检测的data不是对象，直接返回,typeof null == "object"
-    if(typeof data !== "object" || data == null) {
+    if(!isObject()) {
+        console.log("bubuu")
         return data
     }
     // 如果被检测过就不用再检测了
