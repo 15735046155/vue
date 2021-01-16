@@ -1,0 +1,31 @@
+<!--
+ * @Descripttion: 
+ * @Author: 黄佳佳
+ * @Date: 2021-01-16 10:52:35
+ * @LastEditors: 黄佳佳
+ * @LastEditTime: 2021-01-16 15:33:17
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div id="app"></div>
+    <script src="dist/umd/vue.js"></script>
+    <script>
+        let vm = new Vue({
+            el:"#app",
+            data(){
+                return {
+                    a:1
+                }
+            }
+        })
+        vm._data.a = {a:1}
+        console.log(vm._data.a)
+    </script>
+</body>
+</html>
